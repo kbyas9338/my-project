@@ -143,6 +143,7 @@ export default function Pagination() {
   return (
     <div className="paginate-container container my-4">
       <ToastContainer position="top-right" autoClose={3000} />
+
       {loading ? (
         <ClipLoader
           color="#36d7b7"
@@ -152,7 +153,8 @@ export default function Pagination() {
         />
       ) : (
         <>
-          <div className="d-flex justify-content-between mb-3">
+          {/* ✅ Search & Sort Controls */}
+          <div className="d-flex flex-column flex-md-row justify-content-between mb-3 gap-2">
             <input
               className="form-control me-2"
               type="text"
@@ -169,7 +171,7 @@ export default function Pagination() {
               className="form-select"
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              style={{ maxWidth: "150px" }}
+              style={{ maxWidth: "180px" }}
             >
               <option value="">Sort</option>
               <option value="asc">Ascending (A–Z)</option>
@@ -177,126 +179,132 @@ export default function Pagination() {
             </select>
           </div>
 
-          <p className="text-end text-muted">
+          <p className="text-end text-muted small">
             Showing {offset + 1}–
             {Math.min(offset + postsPerPage, filteredPosts.length)} of{" "}
             {filteredPosts.length} posts
           </p>
 
+          {/* ✅ Responsive Table */}
           {currentPosts.length > 0 ? (
             <>
-              <table className="table table-dark table-striped table-hover table-bordered">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th style={{ width: "20%" }}>Title</th>
-                    <th>Image</th>
-                    <th style={{ width: "50%" }}>Body</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentPosts.map((post) => (
-                    <tr key={post.id}>
-                      <td>{post.id}</td>
-                      <td>
-                        {editRowId === post.id ? (
-                          <input
-                            className="form-control"
-                            name="title"
-                            value={editedPost.title}
-                            onChange={handleEditChange}
+              <div className="table-responsive">
+                <table className="table table-dark table-striped table-hover table-bordered align-middle">
+                  <thead className="text-center">
+                    <tr>
+                      <th>ID</th>
+                      <th style={{ minWidth: "150px" }}>Title</th>
+                      <th>Image</th>
+                      <th style={{ minWidth: "250px" }}>Body</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentPosts.map((post) => (
+                      <tr key={post.id}>
+                        <td className="text-center">{post.id}</td>
+                        <td>
+                          {editRowId === post.id ? (
+                            <input
+                              className="form-control"
+                              name="title"
+                              value={editedPost.title}
+                              onChange={handleEditChange}
+                            />
+                          ) : (
+                            post.title
+                          )}
+                        </td>
+                        <td className="text-center">
+                          <img
+                            src={post.image}
+                            alt={`Post ${post.id}`}
+                            style={{
+                              width: "80px",
+                              height: "50px",
+                              objectFit: "cover",
+                              borderRadius: "4px",
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = defaultImage;
+                            }}
                           />
-                        ) : (
-                          post.title
-                        )}
-                      </td>
-                      <td>
-                        <img
-                          src={post.image}
-                          alt={`Post ${post.id} thumbnail`}
-                          style={{
-                            width: "100px",
-                            height: "60px",
-                            objectFit: "cover",
-                            borderRadius: "4px",
-                          }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = defaultImage;
-                          }}
-                        />
-                      </td>
-                      <td>
-                        {editRowId === post.id ? (
-                          <input
-                            className="form-control"
-                            name="body"
-                            value={editedPost.body}
-                            onChange={handleEditChange}
-                          />
-                        ) : (
-                          post.body
-                        )}
-                      </td>
-                      <td>
-                        {editRowId === post.id ? (
-                          <>
+                        </td>
+                        <td>
+                          {editRowId === post.id ? (
+                            <input
+                              className="form-control"
+                              name="body"
+                              value={editedPost.body}
+                              onChange={handleEditChange}
+                            />
+                          ) : (
+                            post.body
+                          )}
+                        </td>
+                        <td className="text-center">
+                          {editRowId === post.id ? (
+                            <>
+                              <button
+                                className="btn btn-success btn-sm me-2"
+                                onClick={handleSave}
+                                disabled={actionLoading}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className="btn btn-secondary btn-sm"
+                                onClick={handleCancel}
+                                disabled={actionLoading}
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
                             <button
-                              className="btn btn-success btn-sm me-2"
-                              onClick={handleSave}
+                              className="btn btn-primary btn-sm me-2"
+                              onClick={() => handleEditClick(post)}
                               disabled={actionLoading}
                             >
-                              Save
+                              Edit
                             </button>
-                            <button
-                              className="btn btn-secondary btn-sm"
-                              onClick={handleCancel}
-                              disabled={actionLoading}
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
+                          )}
                           <button
-                            className="btn btn-primary btn-sm me-2"
-                            onClick={() => handleEditClick(post)}
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDelete(post.id)}
                             disabled={actionLoading}
                           >
-                            Edit
+                            Delete
                           </button>
-                        )}
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => handleDelete(post.id)}
-                          disabled={actionLoading}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <ReactPaginate
-                pageCount={pageCount}
-                onPageChange={handlePageChange}
-                containerClassName="pagination"
-                activeClassName="active"
-                previousLabel="Prev"
-                nextLabel="Next"
-                breakLabel="..."
-                pageClassName="page-item"
-                previousClassName="page-item"
-                nextClassName="page-item"
-                pageLinkClassName="page-link"
-                nextLinkClassName="page-link"
-                previousLinkClassName="page-link"
-                breakClassName="page-item"
-                breakLinkClassName="page-link"
-                forcePage={currentPage}
-              />
+              {/* ✅ Pagination Responsive */}
+              <div className="d-flex justify-content-center flex-wrap mt-3">
+                <ReactPaginate
+                  pageCount={pageCount}
+                  onPageChange={handlePageChange}
+                  containerClassName="pagination"
+                  activeClassName="active"
+                  previousLabel="Prev"
+                  nextLabel="Next"
+                  breakLabel="..."
+                  pageClassName="page-item"
+                  previousClassName="page-item"
+                  nextClassName="page-item"
+                  pageLinkClassName="page-link"
+                  nextLinkClassName="page-link"
+                  previousLinkClassName="page-link"
+                  breakClassName="page-item"
+                  breakLinkClassName="page-link"
+                  forcePage={currentPage}
+                />
+              </div>
             </>
           ) : (
             <p className="text-center mt-4">No posts found.</p>

@@ -31,53 +31,40 @@ export default function ColorSelector() {
   ];
 
   return (
-    <div
-      className="container"
-      style={{
-        padding: "40px",
-        textAlign: "center",
-      }}
-    >
+    <div className="container py-4 text-center">
       <h2 className="mb-4">Choose Your Subscription Plan</h2>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "20px",
-          flexWrap: "wrap",
-        }}
-      >
+
+      <div className="row justify-content-center g-3">
         {plans.map((plan) => (
           <div
             key={plan.name}
+            className="col-12 col-sm-6 col-md-4"
             onClick={() => setActivePlan(plan.name)}
-            style={{
-              width: "250px",
-              padding: "20px",
-              border: "2px solid #ccc",
-              borderRadius: "12px",
-              cursor: "pointer",
-              backgroundColor:
-                activePlan === plan.name ? "#007bff" : "grey",
-              color: activePlan === plan.name ? "white" : "#333",
-              boxShadow:
-                activePlan === plan.name
-                  ? "0 4px 10px rgba(0, 123, 255, 0.4)"
-                  : "0 2px 4px rgba(255, 255, 255, 0.84)",
-              transition: "all 0.3s ease",
-            }}
           >
-            <h4>{plan.name}</h4>
-            <p style={{ fontSize: "18px", fontWeight: "bold" }}>{plan.price}</p>
-            <ul style={{ textAlign: "left", paddingLeft: "20px" }}>
-              {plan.features.map((feature, idx) => (
-                <li key={idx}>{feature}</li>
-              ))}
-            </ul>
+            <div
+              className={`card h-100 shadow-sm ${
+                activePlan === plan.name ? "border-primary bg-primary text-white" : ""
+              }`}
+              style={{
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <div className="card-body">
+                <h4 className="card-title">{plan.name}</h4>
+                <p className="card-text fw-bold fs-5">{plan.price}</p>
+                <ul className={`list-unstyled ${activePlan === plan.name ? "text-white" : "text-dark"}`}>
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx}>✔ {feature}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         ))}
       </div>
-      <p style={{ marginTop: "30px", fontStyle: "italic" }}>
+
+      <p className="mt-4 fst-italic">
         Selected Plan: <strong>{activePlan}</strong>
       </p>
     </div>

@@ -11,11 +11,12 @@ import MyForm from "./MyForm";
 import ColorSelector from "./ColorSelector";
 import NumberColorChanger from "./NumberColorChanger";
 import UserComponent from "./Components/UserComponent";
-import Pagination from "./Components/Pagination"; // Ensure filename is Pagination.js
+import Pagination from "./Components/Pagination";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { useState } from "react";
 import StackBars from "./Components/Chart";
 import Dashboard from "./Components/Dashboard";
+import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Make sure Bootstrap is imported
 
 function App() {
   const [role, setRole] = useState("admin"); // Change role as needed
@@ -23,12 +24,25 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-          <Link className="navbar-brand" to="/">
+        {/* ✅ Responsive Navbar */}
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+          <Link className="navbar-brand fw-bold" to="/">
             My Portfolio
           </Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav me-auto d-flex align-items-center gap-3">
+            <ul className="navbar-nav ms-auto d-flex flex-wrap align-items-center gap-2">
               <li className="nav-item">
                 <NavLink
                   to="/"
@@ -113,6 +127,7 @@ function App() {
           </div>
         </nav>
 
+        {/* ✅ Responsive Container for Pages */}
         <div className="container mt-4">
           <Routes>
             <Route path="/" element={<MyForm />} />
